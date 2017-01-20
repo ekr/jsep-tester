@@ -4,6 +4,9 @@ function canonicalize(sdp) {
         
     for (l in lines) {
         let trimmed = lines[l].trim()
+        if (lines[l].length === 0) {
+            continue;
+        }
         if (lines[l].startsWith(' ')) {
             // Line folding
             if (!trimmed.startsWith(':')) {
