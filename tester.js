@@ -1,7 +1,7 @@
 function canonicalize(sdp) {
     let lines = sdp.split("\n");
     let output = "";
-        
+
     for (l in lines) {
         let trimmed = lines[l].trim()
         if (lines[l].length === 0) {
@@ -25,21 +25,24 @@ function test() {
     let sdp = document.getElementById("offer").value;
     console.log("Original SDP" + sdp);
     let canon = canonicalize(sdp);
-    
+
     console.log("Canonical SDP:" + canon);
-    
-    let pc = new RTCPeerConnection({});
+
+    let pc = new RTCPeerConnection();
     pc.setRemoteDescription(
-        {
-            type : "offer",
-            sdp : canon
-        },
-        function () {
-            alert("Success");
-        },
-        function (e) {
-            alert("Error "+e);
-        });
+        { type : "offer",
+          sdp : canon }
+    ).then(() => {
+      console.log("successfully set remote description");
+      return pc.createAnswer();
+    }).then((answer) => {
+      console.log("Answer: " + JSON.stringify(answer));
+      return pc.setLocalDescription(answer);
+    }).then(() => {
+      console.log("successfully set local description");
+    }).catch((e) => {
+      alert("Error: " + e);
+    });
 }
 
 
